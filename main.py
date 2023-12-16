@@ -11,9 +11,9 @@ FPS = 60
 #mixer.music.play()
 #fire_sound = mixer.Sound('fire.ogg')
 #
-#lost = 0
-#kill = 0
-#
+
+kill = 0
+
 font = font.SysFont('Arial',50)
 win = font.render('YOU WIN!', True,(255, 0, 0))
 lose = font.render('YOU LOSE!', True,(255, 0, 0))
@@ -56,22 +56,20 @@ for i in range(6):
     monsterOne = Enemy('vrag.png',xCor1 ,10 ,0, 50, 50)        
     xCor1 += 80      
     monsters1.add(monsterOne)
-monsters2 = sprite.Group()
 for i in range(5):
     monsterTwo = Enemy('vrag.png',xCor2 ,60 ,0, 50, 50)        
     xCor2 += 90      
-    monsters2.add(monsterTwo)
-monsters3 = sprite.Group()
+    monsters1.add(monsterTwo)
 for i in range(4):
     monsterThree = Enemy('vrag.png',xCor3 ,110 ,0, 50, 50)        
     xCor3 += 100      
-    monsters3.add(monsterThree)
+    monsters1.add(monsterThree)
 #for c in range(2):
 #    asteroid = Enemy('asteroid.png', randint(20,600), 0, randint(1,2), 50, 50)
 #    asteroids.add(asteroid)
 
 player = Player('racetka.png', 250, 450, 6, 120,30)
-ball = GameSprite('ball.png',200, 100, 13,50, 50)
+ball = GameSprite('ball.png',200, 300, 13,50, 50)
 
 speed_x = 3
 speed_y = 3
@@ -96,10 +94,16 @@ while game:
         ball.reset()
         monsters1.update()
         monsters1.draw(window)
-        monsters2.update()
-        monsters2.draw(window)
-        monsters3.update()
-        monsters3.draw(window)
+
+        for mn in monsters1:
+            if sprite.collide_rect(ball, mn):
+                mn.kill()
+                speed_y *= -1
+                kill += 1
+
+        if kill == 15:
+            window.blit(win, (120, 215))
+            finish = True
 
         if ball.rect.x < 2 or ball.rect.x > 450 :
             speed_x *= -1
@@ -109,7 +113,7 @@ while game:
             speed_y *= -1 
         if ball.rect.y > 500 :
             finish = True
-            window.blit(lose, (140, 215))
+            window.blit(lose, (120, 215))
 
 
     display. update()
